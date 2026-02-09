@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:path_provider/path_provider.dart';
@@ -150,103 +153,189 @@ class PdfService {
     Deal deal,
     Client client, {
     Uint8List? signature,
+    String? conditions,
+    DateTime? date,
   }) async {
     final pdf = pw.Document();
     final font = await PdfGoogleFonts.robotoRegular();
     final fontBold = await PdfGoogleFonts.robotoBold();
+    final dateFormat = DateFormat('dd.MM.yyyy');
+    final contractDate = date ?? DateTime.now();
+    final currencyFormat = NumberFormat.currency(
+      locale: 'ru',
+      symbol: '₽',
+      decimalDigits: 2,
+    );
+
+    // Load images
+    final logoImage = await _loadAssetImage('assets/images/logo.jpeg');
+    final stampImage = await _loadAssetImage('assets/images/stamp.jpeg');
+    final sellerSignatureImage = await _loadAssetImage(
+      'assets/images/signature.jpeg',
+    );
 
     pdf.addPage(
-      pw.Page(
+      pw.MultiPage(
         theme: pw.ThemeData.withFont(base: font, bold: fontBold),
+        pageFormat: PdfPageFormat.a4,
         build: (context) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Header(level: 0, child: pw.Text('Договор купли-продажи')),
-              pw.Text('г. Москва, ${DateTime.now().year} г.'),
-              pw.SizedBox(height: 20),
-              pw.Text(
-                'Продавец, именуемый в дальнейшем "Продавец", с одной стороны, и',
-              ),
-              pw.Text(
-                '${client.name}, именуемый(ая) в дальнейшем "Покупатель",',
-              ),
-              pw.Text('заключили настоящий Договор о нижеследующем:'),
-              pw.SizedBox(height: 10),
-              pw.Text('1. ПРЕДМЕТ ДОГОВОРА'),
-              pw.Text(
-                '1.1. Продавец обязуется передать в собственность Покупателя, а Покупатель принять и оплатить следующий Товар:',
-              ),
-              pw.SizedBox(height: 10),
-              pw.Table.fromTextArray(
-                context: context,
-                data: <List<String>>[
-                  <String>['Товар', 'Кол-во', 'Цена', 'Сумма'],
-                  ...deal.products.map(
-                    (p) => [
-                      p.name,
-                      p.quantity.toString(),
-                      p.price.toString(),
-                      p.total.toString(),
-                    ],
-                  ),
-                ],
-              ),
-              pw.SizedBox(height: 10),
-              pw.Text(
-                '1.2. Общая сумма договора составляет: ${deal.totalAmount} руб.',
-              ),
-              pw.SizedBox(height: 20),
-              pw.Text('2. АДРЕСА И РЕКВИЗИТЫ СТОРОН'),
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text(
-                        'Продавец:',
-                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                      ),
-                      pw.Text('ООО "Мебель"'),
-                    ],
-                  ),
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text(
-                        'Покупатель:',
-                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                      ),
-                      pw.Text(client.name),
-                      pw.Text(client.address),
-                      pw.Text(client.phone),
-                    ],
-                  ),
-                ],
-              ),
-              if (signature != null) ...[
-                pw.SizedBox(height: 20),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.end,
+          return [
+            // Header with Logo
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                if (logoImage != null)
+                  pw.Container(
+                    width: 100,
+                    height: 100,
+                    child: pw.Image(logoImage, fit: pw.BoxFit.contain),
+                  )
+                else
+                  pw.SizedBox(width: 100, height: 100),
+                pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.end,
                   children: [
-                    pw.Column(
-                      children: [
-                        pw.Text('Подпись Покупателя:'),
-                        pw.SizedBox(height: 5),
-                        pw.Image(
-                          pw.MemoryImage(signature),
-                          width: 100,
-                          height: 50,
-                        ),
-                      ],
+                    pw.Text(
+                      'ДОГОВОР № ${deal.id.substring(0, 8)}',
+                      style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
+                    pw.Text('г. Москва, ${dateFormat.format(contractDate)}'),
                   ],
                 ),
               ],
+            ),
+            pw.SizedBox(height: 20),
+
+            // Intro
+            pw.RichText(
+              text: pw.TextSpan(
+                children: [
+                  const pw.TextSpan(
+                    text:
+                        'ИП "Продавец", именуемый в дальнейшем "Продавец", действующий на основании Свидетельства, с одной стороны, и ',
+                  ),
+                  pw.TextSpan(
+                    text: client.name,
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                  const pw.TextSpan(
+                    text:
+                        ', именуемый(ая) в дальнейшем "Покупатель", с другой стороны, заключили настоящий Договор о нижеследующем:',
+                  ),
+                ],
+              ),
+            ),
+            pw.SizedBox(height: 20),
+
+            // 1. Subject
+            pw.Header(level: 1, child: pw.Text('1. ПРЕДМЕТ ДОГОВОРА')),
+            pw.Text(
+              '1.1. Продавец обязуется передать в собственность Покупателя, а Покупатель принять и оплатить следующий Товар:',
+            ),
+            pw.SizedBox(height: 10),
+
+            // Table
+            pw.Table.fromTextArray(
+              context: context,
+              headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              headers: ['Наименование', 'Кол-во', 'Цена', 'Сумма'],
+              data: [
+                ...deal.products.map(
+                  (p) => [
+                    p.name,
+                    '${p.quantity}',
+                    currencyFormat.format(p.price),
+                    currencyFormat.format(p.total),
+                  ],
+                ),
+                ['ИТОГО', '', '', currencyFormat.format(deal.totalAmount)],
+              ],
+            ),
+            pw.SizedBox(height: 20),
+
+            // 2. Terms
+            pw.Header(
+              level: 1,
+              child: pw.Text('2. СТОИМОСТЬ И ПОРЯДОК РАСЧЕТОВ'),
+            ),
+            pw.Text(
+              '2.1. Общая стоимость Товара составляет ${currencyFormat.format(deal.totalAmount)}.',
+            ),
+            pw.Text('2.2. Оплата производится в рублях.'),
+            if (conditions != null && conditions.isNotEmpty) ...[
+              pw.SizedBox(height: 10),
+              pw.Text('2.3. Дополнительные условия: $conditions'),
             ],
-          );
+            pw.SizedBox(height: 20),
+
+            // 3. Addresses and Signatures
+            pw.Header(level: 1, child: pw.Text('3. АДРЕСА И РЕКВИЗИТЫ СТОРОН')),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                // Seller
+                pw.Expanded(
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Text(
+                        'ПРОДАВЕЦ:',
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.SizedBox(height: 5),
+                      pw.Text('ИП "Продавец"'),
+                      pw.Text('ИНН: 1234567890'),
+                      pw.Text('г. Москва, ул. Ленина, 1'),
+                      pw.SizedBox(height: 20),
+                      if (sellerSignatureImage != null && stampImage != null)
+                        pw.Stack(
+                          children: [
+                            pw.Image(sellerSignatureImage, width: 100),
+                            pw.Positioned(
+                              left: 20,
+                              top: -10,
+                              child: pw.Image(stampImage, width: 100),
+                            ),
+                          ],
+                        )
+                      else
+                        pw.SizedBox(height: 100),
+                      pw.Divider(),
+                      pw.Text('Подпись'),
+                    ],
+                  ),
+                ),
+                pw.SizedBox(width: 20),
+                // Buyer
+                pw.Expanded(
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Text(
+                        'ПОКУПАТЕЛЬ:',
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                      ),
+                      pw.SizedBox(height: 5),
+                      pw.Text(client.name),
+                      pw.Text('Тел: ${client.phone}'),
+                      pw.Text('Email: ${client.email}'),
+                      pw.SizedBox(height: 20),
+                      if (signature != null)
+                        pw.Image(pw.MemoryImage(signature), width: 100)
+                      else
+                        pw.SizedBox(height: 100),
+                      pw.Divider(),
+                      pw.Text('Подпись'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ];
         },
       ),
     );
@@ -255,5 +344,15 @@ class PdfService {
     final file = File('${output.path}/contract_${deal.id}.pdf');
     await file.writeAsBytes(await pdf.save());
     return file;
+  }
+
+  Future<pw.MemoryImage?> _loadAssetImage(String path) async {
+    try {
+      final data = await rootBundle.load(path);
+      return pw.MemoryImage(data.buffer.asUint8List());
+    } catch (e) {
+      debugPrint('Error loading asset $path: $e');
+      return null;
+    }
   }
 }

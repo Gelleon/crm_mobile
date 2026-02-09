@@ -173,5 +173,10 @@
   "dealTitleTemplate": "Шаблон названия сделки",
   "dealTitleTemplateHint": "Переменные: id, date, client, amount",
   "resetToDefault": "Сбросить",
-  "templateSaved": "Шаблон сохранен"
+  "templateSaved": "Шаблон сохранен",
+  "contractSettings": "Настройки договора",
+  "date": "Дата",
+  "conditions": "Дополнительные условия",
+  "contractSaved": "Договор сохранен в истории",
+  "noProductsInDeal": "В сделке нет товаров"
 }

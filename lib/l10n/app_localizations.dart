@@ -825,6 +825,36 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Шаблон сохранен'**
   String get templateSaved;
+
+  /// No description provided for @contractSettings.
+  ///
+  /// In ru, this message translates to:
+  /// **'Настройки договора'**
+  String get contractSettings;
+
+  /// No description provided for @date.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дата'**
+  String get date;
+
+  /// No description provided for @conditions.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дополнительные условия'**
+  String get conditions;
+
+  /// No description provided for @contractSaved.
+  ///
+  /// In ru, this message translates to:
+  /// **'Договор сохранен в истории'**
+  String get contractSaved;
+
+  /// No description provided for @noProductsInDeal.
+  ///
+  /// In ru, this message translates to:
+  /// **'В сделке нет товаров'**
+  String get noProductsInDeal;
 }
 
 class _AppLocalizationsDelegate

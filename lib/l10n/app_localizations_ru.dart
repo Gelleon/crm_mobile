@@ -388,4 +388,19 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get templateSaved => 'Шаблон сохранен';
+
+  @override
+  String get contractSettings => 'Настройки договора';
+
+  @override
+  String get date => 'Дата';
+
+  @override
+  String get conditions => 'Дополнительные условия';
+
+  @override
+  String get contractSaved => 'Договор сохранен в истории';
+
+  @override
+  String get noProductsInDeal => 'В сделке нет товаров';
 }

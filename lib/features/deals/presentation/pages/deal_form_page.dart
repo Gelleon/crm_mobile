@@ -19,6 +19,7 @@ import '../../domain/entities/deal_status.dart';
 import '../../domain/entities/product.dart';
 import '../providers/deals_provider.dart';
 import '../../../clients/presentation/providers/clients_provider.dart';
+import 'package:crm_mobile/features/documents/presentation/pages/contract_generation_page.dart';
 import 'package:crm_mobile/features/documents/services/pdf_service.dart';
 import 'package:crm_mobile/core/services/speech_service.dart';
 import 'package:crm_mobile/l10n/app_localizations.dart';
@@ -172,7 +173,9 @@ class DealFormPage extends HookConsumerWidget {
                         clients.any((c) => c.id == selectedClientId.value);
 
                     return DropdownButtonFormField<String>(
-                      value: clientExists ? selectedClientId.value : null,
+                      initialValue: clientExists
+                          ? selectedClientId.value
+                          : null,
                       decoration: InputDecoration(labelText: l10n.client),
                       items: clients
                           .map(
@@ -402,52 +405,12 @@ class DealFormPage extends HookConsumerWidget {
                             );
                             if (client == null) return;
 
-                            showDialog(
-                              context: context,
-                              builder: (context) => _SignContractDialog(
-                                onSigned: (signature) async {
-                                  final file = await getIt<PdfService>()
-                                      .generateContract(
-                                        deal!,
-                                        client,
-                                        signature: signature,
-                                      );
-                                  if (context.mounted) {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) => SafeArea(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            ListTile(
-                                              leading: const Icon(
-                                                Icons.open_in_new,
-                                              ),
-                                              title: Text(l10n.openFile),
-                                              onTap: () {
-                                                Navigator.pop(context);
-                                                OpenFile.open(file.path);
-                                              },
-                                            ),
-                                            ListTile(
-                                              leading: const Icon(Icons.share),
-                                              title: Text(l10n.shareFile),
-                                              onTap: () {
-                                                Navigator.pop(context);
-                                                Share.shareXFiles(
-                                                  [XFile(file.path)],
-                                                  text: l10n.contractFor(
-                                                    deal!.title,
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ContractGenerationPage(
+                                  deal: deal!,
+                                  client: client,
+                                ),
                               ),
                             );
                           },
@@ -507,7 +470,7 @@ class _VoiceInputSuffix extends HookWidget {
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('${l10n.error(error)}'),
+                    content: Text(l10n.error(error)),
                     backgroundColor: Colors.red,
                   ),
                 );
