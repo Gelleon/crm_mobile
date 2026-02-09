@@ -1,0 +1,177 @@
+{
+  "@@locale": "ru",
+  "authenticating": "Аутентификация...",
+  "authFailed": "Ошибка аутентификации. Нажмите, чтобы повторить.",
+  "retry": "Повторить",
+  "clients": "Клиенты",
+  "deals": "Сделки",
+  "analytics": "Аналитика",
+  "settings": "Настройки",
+  "enableBiometric": "Включить вход по биометрии",
+  "openaiApiKey": "OpenAI API Ключ",
+  "enterApiKey": "Введите ваш OpenAI API Ключ",
+  "save": "Сохранить",
+  "apiKeySaved": "API Ключ сохранен",
+  "clientName": "Имя",
+  "clientPhone": "Телефон",
+  "clientEmail": "Email",
+  "clientAddress": "Адрес",
+  "clientComment": "Комментарий",
+  "addClient": "Добавить клиента",
+  "editClient": "Редактировать клиента",
+  "deleteClient": "Удалить клиента",
+  "saveClient": "Сохранить клиента",
+  "dealStatus": "Статус",
+  "dealAmount": "Сумма",
+  "dealProducts": "Товары",
+  "addDeal": "Добавить сделку",
+  "deleteDeal": "Удалить сделку",
+  "saveDeal": "Сохранить сделку",
+  "totalTurnover": "Оборот",
+  "totalProfit": "Прибыль",
+  "averageMargin": "Маржа",
+  "dealsCount": "Количество сделок",
+  "averageCheck": "Средний чек",
+  "salesReport": "Отчет по продажам",
+  "summary": "Сводка",
+  "indicator": "Показатель",
+  "value": "Значение",
+  "details": "Детализация",
+  "productName": "Название товара",
+  "quantity": "Количество",
+  "price": "Цена",
+  "tax": "Налог (%)",
+  "addProduct": "Добавить товар",
+  "editProduct": "Редактировать товар",
+  "searchHint": "Поиск по имени, телефону или email",
+  "noClientsFound": "Клиенты не найдены",
+  "error": "Ошибка: {error}",
+  "@error": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "dealTitle": "Сделка",
+  "@dealTitle": {
+    "description": "Заголовок сделки без ID"
+  },
+  "exportPdf": "Экспорт в PDF",
+  "exportExcel": "Экспорт в Excel",
+  "exportError": "Ошибка экспорта: {error}",
+  "@exportError": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "newClient": "Новый клиент",
+  "newDeal": "Новая сделка",
+  "editDeal": "Редактировать сделку",
+  "client": "Клиент",
+  "errorLoadingClients": "Ошибка загрузки клиентов: {error}",
+  "@errorLoadingClients": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "monthlyGoal": "Цель на месяц",
+  "setMonthlyGoal": "Установить цель",
+  "targetTurnoverLabel": "Целевой оборот",
+  "cancel": "Отмена",
+  "maxDeal": "Макс. сделка",
+  "turnoverDynamics": "Динамика оборота",
+  "noDataForPeriod": "Нет данных за период",
+  "dealsDetails": "Детализация сделок",
+  "language": "Язык",
+  "english": "Английский",
+  "russian": "Русский",
+  "history": "История",
+  "documents": "Документы",
+  "quote": "КП (Quote)",
+  "contract": "Договор",
+  "historyOfChanges": "История изменений",
+  "noHistoryFound": "История не найдена",
+  "costPrice": "Себестоимость",
+  "description": "Описание",
+  "info": "Инфо",
+  "createdAt": "Создан",
+  "noInteractionHistory": "Нет истории взаимодействий",
+  "addInteraction": "Добавить взаимодействие",
+  "type": "Тип",
+  "notes": "Заметки",
+  "dateTime": "Дата и время",
+  "remindMe": "Напомнить мне",
+  "total": "Итого: {amount}",
+  "@total": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "interactionReminder": "Напоминание: {type}",
+  "@interactionReminder": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "add": "Добавить",
+  "periodToday": "Сегодня",
+  "periodWeek": "Неделя",
+  "periodMonth": "Месяц",
+  "periodCustom": "Период",
+  "interactionCall": "Звонок",
+  "interactionMeeting": "Встреча",
+  "interactionNote": "Заметка",
+  "interactionOther": "Другое",
+  "dealStatusInProgress": "В работе",
+  "dealStatusQuoteSent": "КП отправлено",
+  "dealStatusRejected": "Отказ",
+  "dealStatusPaid": "Оплата",
+  "dealStatusCompleted": "Выполнено",
+  "noDealsFound": "Сделки не найдены",
+  "discount": "Скидка",
+  "signContract": "Подписать договор",
+  "clear": "Очистить",
+  "signAndGenerate": "Подписать и создать",
+  "deleteDealTitle": "Удалить сделку",
+  "deleteDealConfirmation": "Вы уверены, что хотите удалить эту сделку?",
+  "dealDeleted": "Сделка удалена",
+  "dealRestored": "Сделка восстановлена",
+  "foundSavedDraft": "Найдена сохраненная копия. Восстановить?",
+  "restore": "Восстановить",
+  "undo": "Отменить",
+  "fieldRequired": "Поле обязательно",
+  "invalidNumber": "Неверное число",
+  "openFile": "Открыть",
+  "shareFile": "Поделиться",
+  "contractFor": "Договор для {title}",
+  "@contractFor": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "quoteFor": "КП для {title}",
+  "@quoteFor": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "draftRestored": "Черновик восстановлен",
+  "errorRestoringDraft": "Ошибка восстановления черновика",
+  "dealTitleTemplate": "Шаблон названия сделки",
+  "dealTitleTemplateHint": "Переменные: id, date, client, amount",
+  "resetToDefault": "Сбросить",
+  "templateSaved": "Шаблон сохранен"
+}
